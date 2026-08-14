@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NepalSathi — a citizen-first Nepal service guide for documents, government services, education, jobs, travel, safety and everyday tools.">
+<title>NepalSathi — Citizen Help for Nepal</title>
+<style>
+:root{
+ --red:#d7193f;--red2:#ac1231;--blue:#1b55b7;--green:#147d43;--orange:#c87306;--purple:#6941c6;
+ --bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#e5e9f0;--soft:#f2f4f7;
+ --shadow:0 8px 28px rgba(16,24,40,.07);--shadow2:0 18px 55px rgba(16,24,40,.14)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+.hidden{display:none!important}
+
+.header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{max-width:1260px;margin:auto;min-height:68px;padding:9px 18px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:9px;font-size:20px;font-weight:900;white-space:nowrap}
+.logo{position:relative;width:32px;height:40px}
+.logo:before{content:"";position:absolute;inset:0;background:var(--red);clip-path:polygon(0 0,100% 24%,68% 48%,100% 73%,0 100%)}
+.logo:after{content:"★";position:absolute;left:5px;top:7px;color:#fff;font-size:12px}
+.nav-search{flex:1;max-width:540px;position:relative;margin-left:10px}
+.nav-search input{width:100%;height:42px;border:1px solid var(--line);background:#f8f9fb;border-radius:23px;padding:0 16px 0 42px;outline:0}
+.nav-search:before{content:"⌕";position:absolute;left:15px;top:7px;font-size:21px;color:#667085;z-index:1}
+.nav-search input:focus{background:#fff;border-color:#b8c8e6;box-shadow:0 0 0 4px #edf2ff}
+.nav-actions{display:flex;gap:7px;margin-left:auto}
+.nav-actions button{border:0;background:var(--soft);color:#344054;border-radius:10px;height:40px;padding:0 11px;font-size:12px;font-weight:800}
+
+.hero{background:linear-gradient(135deg,#8f0a2b,#d7193f 55%,#eb5b77);color:#fff}
+.hero-inner{max-width:1260px;margin:auto;padding:52px 22px 60px;display:grid;grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr);gap:30px;align-items:center}
+.hero h1{font-size:clamp(38px,6vw,66px);line-height:1.02;letter-spacing:-2.5px;max-width:800px}
+.hero p{margin-top:15px;max-width:760px;font-size:17px;color:#ffe9ed}
+.hero-search{display:flex;gap:6px;max-width:820px;background:#fff;border-radius:15px;padding:7px;margin-top:22px;box-shadow:0 14px 40px rgba(0,0,0,.18)}
+.hero-search input{flex:1;min-width:0;border:0;outline:0;padding:13px 12px;font-size:16px}
+.hero-search button{border:0;border-radius:10px;background:#111827;color:#fff;padding:0 18px;font-weight:900}
+.hero-search .mic{background:#eef2f6;color:#344054;width:46px;padding:0}
+.hero-note{margin-top:11px;font-size:12px;color:#ffdbe3}
+.search-suggestions{
+  position:absolute;
+  left:0;right:0;top:calc(100% + 7px);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:var(--shadow2);
+  overflow:hidden;
+  z-index:2500;
+  display:none;
+  color:var(--text);
+}
+.search-suggestions.show{display:block}
+.suggestion{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  width:100%;
+  border:0;
+  background:#fff;
+  text-align:left;
+  padding:11px 13px;
+}
+.suggestion:hover{background:#f7f8fa}
+.suggestion-icon{
+  width:34px;height:34px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  background:#eef4ff;font-size:18px;flex:none
+}
+.suggestion-main{flex:1;min-width:0}
+.suggestion-main b{display:block;font-size:12px}
+.suggestion-main span{display:block;font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-hint{
+  padding:9px 13px;font-size:10px;color:#98a2b3;
+  background:#fafbfc;border-top:1px solid #eef1f4
+}
+
+.hero-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:18px;padding:21px}
+.hero-card h3{font-size:13px;letter-spacing:2px;text-transform:uppercase}
+.hero-card p{font-size:13px;margin-top:7px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.stat{background:rgba(0,0,0,.14);border-radius:11px;padding:10px}
+.stat b{display:block;font-size:18px}.stat span{display:block;font-size:10px;color:#ffdfe6}
+
+.main{max-width:1260px;margin:auto;padding:30px 22px 65px}
+.section{margin-top:34px}
+.section:first-child{margin-top:0}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:14px}
+.section-head h2{font-size:24px}.section-head p{font-size:13px;color:var(--muted)}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);padding:17px;transition:.18s}
+.card:hover{transform:translateY(-2px);box-shadow:0 14px 37px rgba(16,24,40,.1)}
+.quick{min-height:156px;display:flex;flex-direction:column;justify-content:space-between}
+.qicon{width:45px;height:45px;border-radius:12px;background:#eef4ff;display:flex;align-items:center;justify-content:center;font-size:22px}
+.quick h3{font-size:15px;margin-top:10px}.quick p{font-size:12px;color:var(--muted);margin-top:4px}
+.btn{border:0;border-radius:9px;padding:9px 12px;font-size:12px;font-weight:900}
+.red{background:var(--red);color:#fff}.blue{background:#edf3ff;color:var(--blue)}.green{background:#e9f8ef;color:#0c7138}
+.gray{background:var(--soft);color:#344054}.orange{background:#fff5e8;color:#8d5100}.purple{background:#f2edff;color:#5b36ac}
+
+.answer{display:none;margin-top:13px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px}
+.answer.show{display:block}
+.answer-top{display:flex;gap:12px;align-items:flex-start}
+.answer-icon{width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#eef4ff;font-size:22px;flex:none}
+.answer h3{font-size:21px}.lead{color:var(--muted);font-size:13px;margin-top:2px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.tag{background:#f2f4f7;color:#475467;border-radius:999px;padding:5px 8px;font-size:10px}
+.steps{display:grid;gap:9px;margin-top:15px}
+.step{display:flex;gap:10px;padding:11px;background:#f8fafc;border:1px solid #eef1f4;border-radius:11px}
+.num{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--red);color:#fff;font-size:12px;font-weight:900;flex:none}
+.step b{display:block;font-size:13px}.step span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.checklist{margin-top:14px;border:1px dashed #cfd6df;border-radius:11px;padding:13px}
+.check-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.check-head b{font-size:13px}
+.check-item{display:flex;gap:9px;align-items:center;padding:7px 0;font-size:12px;color:#344054}
+.check-item input{accent-color:var(--red)}
+.official{margin-top:14px;padding:11px 13px;background:#ecfdf3;border-left:4px solid var(--green);border-radius:9px;font-size:12px}
+.warning{margin-top:9px;padding:11px 13px;background:#fffaeb;border-left:4px solid #f79009;border-radius:9px;font-size:12px;color:#7a4d00}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.savebar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:10px;color:#98a2b3}
+
+.life-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.life{min-height:120px}.life b{font-size:14px}.life p{font-size:12px;color:var(--muted);margin-top:4px}.pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}.pill{background:#f2f4f7;padding:5px 8px;border-radius:999px;color:#475467;font-size:10px}
+
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.feature-icon{width:45px;height:45px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px}
+.feature h3{font-size:15px;margin-top:10px}.feature p{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.55}
+
+.multi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tool h3{font-size:14px}.tool p{font-size:12px;color:var(--muted);margin-top:3px}
+.tool input,.tool select{width:100%;height:39px;margin-top:8px;border:1px solid var(--line);border-radius:8px;padding:0 10px;outline:0;background:#fff}
+.out{margin-top:9px;padding:9px;background:#f8fafc;border-radius:8px;font-size:12px;color:#344054}
+
+.scam{background:linear-gradient(135deg,#061a29,#0d4d6b);color:#fff}
+.scam p{color:#d5ecf6}.scam-area{display:flex;gap:8px;margin-top:12px}.scam-area textarea{flex:1;min-height:95px;border:0;border-radius:10px;padding:11px;outline:0;resize:vertical}.risk{display:none;margin-top:10px;padding:12px;border-radius:10px;background:rgba(255,255,255,.09);font-size:12px}.risk.show{display:block}.high{color:#ff9b9b}.med{color:#ffdb74}.low{color:#8cebad}
+
+.track-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:13px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.form-field label{display:block;font-size:11px;color:var(--muted)}.form-field input,.form-field select{width:100%;height:39px;margin-top:5px;border:1px solid var(--line);border-radius:8px;padding:0 9px;outline:0}
+.track-list{display:grid;gap:7px;margin-top:11px}.track{display:flex;align-items:center;gap:8px;background:#f8fafc;padding:9px;border-radius:9px}.track b{font-size:12px;flex:1}.track small{font-size:10px;color:var(--muted)}
+
+.notice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.notice{min-height:135px}.notice .badge{display:inline-block;font-size:9px;color:var(--red);font-weight:900;background:#fff0f3;border-radius:999px;padding:5px 7px}.notice h3{font-size:14px;margin-top:7px}.notice p{font-size:12px;color:var(--muted);margin-top:4px}
+
+.emergency{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.em{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px}.em b{display:block;color:var(--red);font-size:20px}.em span{display:block;color:var(--muted);font-size:12px;margin-top:2px}.em small{display:block;color:#98a2b3;font-size:10px;margin-top:5px}
+
+.saved-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.saved-item{background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:10px}.saved-item b{font-size:12px;display:block}.saved-item span{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.empty{text-align:center;padding:18px;color:var(--muted);font-size:13px}
+
+.footer{background:#101828;color:#d0d5dd}.footer-inner{max-width:1260px;margin:auto;padding:34px 22px;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:25px}.footer h3{color:#fff;margin-bottom:7px}.footer p,.footer a{font-size:12px;color:#98a2b3;line-height:1.7}
+
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.54);z-index:5000;align-items:center;justify-content:center;padding:18px}.modal-bg.show{display:flex}
+.modal{width:min(94%,730px);max-height:88vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:var(--shadow2);padding:20px}
+.modal-top{display:flex;justify-content:space-between;align-items:center}.close{width:34px;height:34px;border:0;background:var(--soft);border-radius:50%}.modal h2{font-size:21px}.modal-content{margin-top:14px}.modal-content p{color:var(--muted);font-size:13px;white-space:pre-line}
+
+.toast{position:fixed;right:20px;bottom:20px;z-index:7000;background:#111827;color:#fff;padding:12px 16px;border-radius:9px;font-size:12px;transform:translateY(90px);opacity:0;transition:.25s}.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:1100px){
+ .hero-inner{grid-template-columns:1fr}
+ .quick-grid,.multi-grid{grid-template-columns:repeat(2,1fr)}
+ .feature-grid,.life-grid,.notice-grid{grid-template-columns:repeat(2,1fr)}
+ .track-grid{grid-template-columns:1fr}
+ .emergency{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+ .nav-search{display:none}.nav-actions button:first-child{display:none}.brand{font-size:17px}
+ .hero-inner{padding:40px 16px 46px}.main{padding:24px 16px 55px}
+ .quick-grid,.multi-grid,.feature-grid,.life-grid,.notice-grid,.saved-grid,.emergency{grid-template-columns:1fr}
+ .hero-search{display:grid;grid-template-columns:1fr 1fr;gap:6px}.hero-search input{grid-column:1/-1}.hero-search button{height:42px}.hero-search .mic{width:auto}
+ .scam-area{display:block}.scam-area button{width:100%;margin-top:7px}
+ .form-grid{grid-template-columns:1fr}
+ .footer-inner{grid-template-columns:1fr;padding:28px 16px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+<nav class="nav">
+  <div class="brand"><span class="logo"></span> NepalSathi</div>
+  <div class="nav-search">
+      <input id="topSearch" autocomplete="off" placeholder="Try: passport banauna k chaincha?">
+      <div id="topSuggestions" class="search-suggestions"></div>
+    </div>
+  <div class="nav-actions">
+    <button onclick="startVoiceSearch()">🎙️</button>
+    <button onclick="showSaved()">⭐ Saved</button>
+    <button onclick="openModal('Nepali / English','NepalSathi is designed to support both English and natural Nepali search. A production version should add a full human-reviewed Nepali translation layer.')">नेपाली / EN</button>
+  </div>
+</nav>
+</header>
+
+<section class="hero">
+<div class="hero-inner">
+  <div>
+    <h1>One simple place for everyday Nepal.</h1>
+    <p>Tell NepalSathi what you are trying to do. Get the next steps, preparation checklist, useful tools and the official place to finish the task.</p>
+    <div class="hero-search" style="position:relative">
+      <input id="heroSearch" autocomplete="off" placeholder="Try: “passport banauna k chaincha?”">
+      <button class="mic" onclick="startVoiceSearch()">🎙️</button>
+      <button onclick="searchSite()">SEARCH</button>
+      <div id="heroSuggestions" class="search-suggestions"></div>
+    </div>
+    <div class="hero-note">Independent guide • official links clearly marked • verify current requirements before applying</div>
+  </div>
+  <div class="hero-card">
+    <h3>Citizen dashboard</h3>
+    <p>Built around real-life tasks rather than a giant list of government websites.</p>
+    <div class="stats">
+      <div class="stat"><b>12+</b><span>Core service areas</span></div>
+      <div class="stat"><b>20+</b><span>Citizen utilities</span></div>
+      <div class="stat"><b>Saved</b><span>Checklists & reminders</span></div>
+      <div class="stat"><b>Local</b><span>Browser-first data</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<main class="main">
+
+<section id="resultsSection" class="section" style="display:none">
+  <div class="section-head"><div><h2>Search results</h2><p>Matches based on your question.</p></div></div>
+  <div id="results" class="notice-grid"></div>
+</section>
+
+<section class="section">
+<div class="section-head"><div><h2>Start with your task</h2><p>Common things Nepali citizens need to do.</p></div></div>
+
+<div class="quick-grid">
+  <div class="card quick"><div><div class="qicon">🛂</div><h3>Passport</h3><p>Apply, appointment, status and replacement.</p></div><button class="btn red" onclick="showAnswer('passport')">Open guide</button></div>
+  <div class="card quick"><div><div class="qicon">🪪</div><h3>National ID</h3><p>Pre-enrollment, enrollment and citizen services.</p></div><button class="btn red" onclick="showAnswer('nid')">Open guide</button></div>
+  <div class="card quick"><div><div class="qicon">🚗</div><h3>Driving / vehicle</h3><p>License application, smart license and vehicle services.</p></div><button class="btn red" onclick="showAnswer('license')">Open guide</button></div>
+  <div class="card quick"><div><div class="qicon">💳</div><h3>PAN / Tax</h3><p>PAN, taxpayer services and tax starting points.</p></div><button class="btn red" onclick="showAnswer('pan')">Open guide</button></div>
+  <div class="card quick"><div><div class="qicon">🗳️</div><h3>Voter</h3><p>Voter registration and election services.</p></div><button class="btn red" onclick="showAnswer('voter')">Open guide</button></div>
+  <div class="card quick"><div><div class="qicon">🎓</div><h3>Scholarships</h3><p>Official education scholarship notices.</p></div><button class="btn red" onclick="showAnswer('scholarship')">Open guide</button></div>
+  <div class="card quick"><div><div class="qicon">🚨</div><h3>Online fraud</h3><p>Preserve evidence and report cybercrime.</p></div><button class="btn red" onclick="showAnswer('fraud')">Open guide</button></div>
+  <div class="card quick"><div><div class="qicon">📜</div><h3>Citizenship</h3><p>Identify your case and start with the right office.</p></div><button class="btn red" onclick="showAnswer('citizenship')">Open guide</button></div>
+</div>
+
+<div id="answer" class="answer"></div>
+</section>
+
+<section class="section">
+<div class="section-head"><div><h2>More citizen services</h2><p>The site should eventually cover the full set of everyday public-service journeys.</p></div></div>
+<div class="life-grid">
+  <div class="card life"><b>🏠 Land & property</b><p>Find official starting points for land records, maps, ownership and registration-related services.</p><div class="pills"><span class="pill">Land record</span><span class="pill">Map</span><span class="pill">Ownership</span></div></div>
+  <div class="card life"><b>✈️ Immigration & abroad</b><p>Visa, immigration, consular and foreign-employment starting points.</p><div class="pills"><span class="pill">Visa</span><span class="pill">Immigration</span><span class="pill">Abroad</span></div></div>
+  <div class="card life"><b>🏦 Finance & consumer</b><p>Tax, banking guidance, digital-payment safety and consumer help.</p><div class="pills"><span class="pill">Tax</span><span class="pill">Payments</span><span class="pill">Safety</span></div></div>
+  <div class="card life"><b>💼 Jobs & careers</b><p>Government vacancy discovery, job preparation and training resources.</p><div class="pills"><span class="pill">Jobs</span><span class="pill">Lok Sewa</span><span class="pill">Training</span></div></div>
+  <div class="card life"><b>🏥 Health</b><p>Hospital, pharmacy, blood and public-health resources in one place.</p><div class="pills"><span class="pill">Hospital</span><span class="pill">Blood</span><span class="pill">Pharmacy</span></div></div>
+  <div class="card life"><b>🏛️ Local government</b><p>Province, district, municipality and ward-level information should become searchable.</p><div class="pills"><span class="pill">Province</span><span class="pill">Municipality</span><span class="pill">Ward</span></div></div>
+</div>
+</section>
+
+<section class="section">
+<div class="section-head"><div><h2>Personal tools</h2><p>Features that make NepalSathi useful after the first visit.</p></div></div>
+<div class="feature-grid">
+  <div class="card feature"><div class="feature-icon" style="background:#eaf8ef">⭐</div><h3>Saved services</h3><p>Save frequently used services and reopen them without searching again.</p><div class="actions"><button class="btn green" onclick="showSaved()">Open saved</button></div></div>
+  <div class="card feature"><div class="feature-icon" style="background:#eef4ff">☑️</div><h3>Document checklists</h3><p>Tick off preparation items for each task and keep progress in your browser.</p><div class="actions"><button class="btn blue" onclick="showAnswer('passport')">Try checklist</button></div></div>
+  <div class="card feature"><div class="feature-icon" style="background:#fff5e8">⏰</div><h3>Expiry reminders</h3><p>Store reminders for passport, license, documents, exams and appointments.</p><div class="actions"><button class="btn orange" onclick="focusTrack()">Add reminder</button></div></div>
+  <div class="card feature"><div class="feature-icon" style="background:#f2edff">🗂️</div><h3>Application tracker</h3><p>Track your own reference number, service, submission date and status note locally.</p><div class="actions"><button class="btn purple" onclick="focusTrack()">Track application</button></div></div>
+  <div class="card feature"><div class="feature-icon" style="background:#eaf8ef">🎙️</div><h3>Voice search</h3><p>Ask by voice when typing is inconvenient.</p><div class="actions"><button class="btn green" onclick="startVoiceSearch()">Try it</button></div></div>
+  <div class="card feature"><div class="feature-icon" style="background:#eef4ff">🖨️</div><h3>Print / share</h3><p>Print a guide or share the current page with a family member.</p><div class="actions"><button class="btn blue" onclick="printAnswer()">Print guide</button><button class="btn gray" onclick="shareCurrent()">Share</button></div></div>
+</div>
+</section>
+
+<section id="scamSection" class="section">
+<div class="section-head"><div><h2>🚨 Scam & suspicious-message checker</h2><p>Paste an SMS, WhatsApp message, email or social-media message.</p></div></div>
+<div class="card scam">
+  <p>This quick checker looks for common red flags such as OTP requests, upfront payments, fake prizes, urgency and suspicious links. It is not proof that a message is safe.</p>
+  <div class="scam-area">
+    <textarea id="scamText" placeholder="Example: Congratulations! You won Rs. 50,000. Send Rs. 2,000 and your OTP now..."></textarea>
+    <button class="btn" style="background:#fff;color:#344054" onclick="checkScam()">CHECK</button>
+  </div>
+  <div id="risk" class="risk"></div>
+</div>
+</section>
+
+<section id="trackerSection" class="section">
+<div class="section-head"><div><h2>🗂️ My application & document tracker</h2><p>Stored only in your browser. Don't enter passwords, OTPs or sensitive banking secrets.</p></div></div>
+<div class="track-grid">
+  <div class="card">
+    <b>Add a tracker item</b>
+    <div class="form-grid" style="margin-top:11px">
+      <div class="form-field"><label>Type</label><select id="trackType"><option>Application</option><option>Document</option><option>Appointment</option><option>Exam</option></select></div>
+      <div class="form-field"><label>Service</label><input id="trackService" placeholder="Passport"></div>
+      <div class="form-field"><label>Reference / note</label><input id="trackRef" placeholder="Optional reference"></div>
+      <div class="form-field"><label>Date</label><input id="trackDate" type="date"></div>
+    </div>
+    <div class="actions"><button class="btn red" onclick="addTracker()">Save item</button></div>
+    <div class="warning"><b>Privacy:</b> store only safe reference information. Never store passwords, OTPs, PINs or banking credentials here.</div>
+  </div>
+  <div class="card">
+    <b>My saved items</b>
+    <div id="trackList" class="track-list"></div>
+  </div>
+</div>
+</section>
+
+<section class="section">
+<div class="section-head"><div><h2>🧮 Everyday calculators</h2><p>Simple local-browser utilities.</p></div></div>
+<div class="multi-grid">
+  <div class="card tool"><h3>Age</h3><p>Approximate current age.</p><input id="dob" type="date"><button class="btn red" onclick="ageCalc()">Calculate</button><div id="ageOut" class="out">Choose DOB.</div></div>
+  <div class="card tool"><h3>Discount</h3><p>Check a sale price.</p><input id="price" type="number" placeholder="Original price"><input id="disc" type="number" placeholder="Discount %"><button class="btn red" onclick="discountCalc()">Calculate</button><div id="discOut" class="out">Enter values.</div></div>
+  <div class="card tool"><h3>Fuel</h3><p>Estimate a trip.</p><input id="km" type="number" placeholder="Distance km"><input id="mil" type="number" placeholder="Mileage km/L"><input id="fp" type="number" placeholder="Fuel price/L"><button class="btn red" onclick="fuelCalc()">Calculate</button><div id="fuelOut" class="out">Enter trip details.</div></div>
+  <div class="card tool"><h3>Study time</h3><p>Split daily study hours.</p><input id="hours" type="number" step=".5" placeholder="Hours"><input id="subjects" type="number" min="1" placeholder="Subjects"><button class="btn red" onclick="studyCalc()">Plan</button><div id="studyOut" class="out">Enter your time.</div></div>
+  <div class="card tool"><h3>Loan payment</h3><p>Simple monthly EMI estimate.</p><input id="loan" type="number" placeholder="Principal"><input id="rate" type="number" step=".01" placeholder="Annual interest %"><input id="months" type="number" placeholder="Months"><button class="btn red" onclick="emiCalc()">Calculate</button><div id="emiOut" class="out">Enter loan details.</div></div>
+  <div class="card tool"><h3>Percentage</h3><p>Find a percentage.</p><input id="part" type="number" placeholder="Part"><input id="whole" type="number" placeholder="Whole"><button class="btn red" onclick="percentCalc()">Calculate</button><div id="percentOut" class="out">Enter values.</div></div>
+  <div class="card tool"><h3>Split bill</h3><p>Divide a cost.</p><input id="bill" type="number" placeholder="Total bill"><input id="people" type="number" min="1" placeholder="People"><button class="btn red" onclick="billCalc()">Calculate</button><div id="billOut" class="out">Enter bill details.</div></div>
+  <div class="card tool"><h3>Trip distance</h3><p>Calculate time from distance/speed.</p><input id="td" type="number" placeholder="Distance km"><input id="ts" type="number" placeholder="Speed km/h"><button class="btn red" onclick="timeCalc()">Calculate</button><div id="timeOut" class="out">Enter values.</div></div>
+</div>
+</section>
+
+<section class="section">
+<div class="section-head"><div><h2>⭐ Saved services</h2><p>Saved locally on this device.</p></div></div>
+<div id="savedBox" class="card"></div>
+</section>
+
+<section class="section">
+<div class="section-head"><div><h2>📌 Useful official service areas</h2><p>The current Government of Nepal portal itself highlights passport, NID, PAN/tax, land records, visa/immigration, vehicle/license, Lok Sewa and Citizen App among major services.</p></div></div>
+<div class="feature-grid">
+  <a class="card feature" href="https://nepal.gov.np/" target="_blank"><div class="feature-icon" style="background:#eef4ff">🇳🇵</div><h3>Government of Nepal</h3><p>One starting point for public services and official information.</p></a>
+  <a class="card feature" href="https://nepalpassport.gov.np/en" target="_blank"><div class="feature-icon" style="background:#eef4ff">🛂</div><h3>Department of Passports</h3><p>Official passport information, process and status.</p></a>
+  <a class="card feature" href="https://enrollment.donidcr.gov.np/PreEnrollment/" target="_blank"><div class="feature-icon" style="background:#eaf8ef">🪪</div><h3>NID Pre-Enrollment</h3><p>Official NID demographic enrollment and appointment system.</p></a>
+  <a class="card feature" href="https://ird.gov.np/" target="_blank"><div class="feature-icon" style="background:#f2edff">💳</div><h3>IRD</h3><p>PAN and taxpayer services.</p></a>
+  <a class="card feature" href="https://applydlnew.dotm.gov.np/login" target="_blank"><div class="feature-icon" style="background:#fff5e8">🚗</div><h3>Transport / License</h3><p>Official DOTM online license application.</p></a>
+  <a class="card feature" href="https://applyvr.election.gov.np/" target="_blank"><div class="feature-icon" style="background:#eef4ff">🗳️</div><h3>Election Commission</h3><p>Official voter service portal.</p></a>
+  <a class="card feature" href="https://moest.gov.np/category/1973/" target="_blank"><div class="feature-icon" style="background:#eaf8ef">🎓</div><h3>Scholarship Notices</h3><p>Current education scholarship notices.</p></a>
+  <a class="card feature" href="https://cyberbureau.nepalpolice.gov.np/report-cyber-crime/" target="_blank"><div class="feature-icon" style="background:#fff5e8">🚨</div><h3>Cyber Bureau</h3><p>Official cybercrime reporting options and requirements.</p></a>
+  <a class="card feature" href="https://donidcr.gov.np/services-list/" target="_blank"><div class="feature-icon" style="background:#f2edff">📜</div><h3>DONIDCR Services</h3><p>Civil registration, National ID and social-security-related services.</p></a>
+</div>
+</section>
+
+<section class="section">
+<div class="section-head"><div><h2>🚑 Emergency</h2><p>Save the numbers that should be easy to reach.</p></div></div>
+<div class="emergency">
+  <div class="em"><b>100</b><span>Nepal Police</span><small>Emergency</small></div>
+  <div class="em"><b>101</b><span>Fire</span><small>Emergency</small></div>
+  <div class="em"><b>102</b><span>Ambulance</span><small>Emergency</small></div>
+  <div class="em"><b>01-5319044</b><span>Cyber Bureau</span><small>Official contact listed by Nepal Police Cyber Bureau</small></div>
+</div>
+</section>
+
+<section class="section">
+<div class="card" style="background:linear-gradient(135deg,#ecf4ff,#f8fbff)">
+  <h2 style="font-size:22px">What this can become</h2>
+  <p style="font-size:13px;color:var(--muted);margin-top:7px;max-width:900px">
+    The next production stage should turn NepalSathi into a continuously verified citizen platform: natural Nepali search, municipality/ward-aware guidance, current notices, local service discovery, job and scholarship aggregation, document expiry alerts, and a trusted admin system for checking every government link and fact.
+  </p>
+</div>
+</section>
+
+</main>
+
+<footer class="footer">
+<div class="footer-inner">
+  <div><h3>🇳🇵 NepalSathi</h3><p>Citizen-first guidance for Nepal. Independent project, not a government website.</p></div>
+  <div><h3>Safety</h3><p>Never enter passwords, OTPs, PINs or banking credentials into NepalSathi. Use the official service for the actual transaction.</p></div>
+  <div><h3>Sources</h3><p>Government pages and official portals should be verified before publishing or updating any procedure.</p></div>
+</div>
+</footer>
+
+<div id="modalBg" class="modal-bg">
+<div class="modal">
+ <div class="modal-top"><h2 id="modalTitle">Information</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div id="modalContent" class="modal-content"></div>
+</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const SERVICES={
+ passport:{title:"Passport — guide",icon:"🛂",desc:"Use the Department of Passports official system for the actual application.",tags:["Passport","Appointment","Status"],steps:[["Choose your case","New, renewal, replacement for lost/stolen, or damaged passport can have different instructions."],["Complete online pre-enrollment","Fill the current official online form and appointment information."],["Prepare the required documents","Follow the current official checklist for your exact case."],["Attend as instructed","Go to the selected service location at the appointment/date shown by the official system."]],docs:["Identity/citizenship details","Required supporting documents","Appointment/reference details"],official:"https://online.nepalpassport.gov.np/"},
+ nid:{title:"National ID — guide",icon:"🪪",desc:"The Department of National ID and Civil Registration provides the official NID services.",tags:["NID","Enrollment","Citizen Portal"],steps:[["Pre-enroll when applicable","Use the official NID pre-enrollment system."],["Book/complete enrollment","Follow the current appointment and biometric instructions."],["Check your details","Make sure your demographic information is correct."],["Use official status/e-service tools","Return to the official citizen portal for supported services."]],docs:["Identity details","Supporting records as required","Enrollment/reference information"],official:"https://enrollment.donidcr.gov.np/PreEnrollment/"},
+ license:{title:"Driving & vehicle services",icon:"🚗",desc:"Start with the Department of Transport Management online system.",tags:["License","Vehicle","DOTM"],steps:[["Choose the service","Driving license applications and vehicle-related services are separate journeys."],["Use the official portal","Follow the current online registration/application process."],["Attend exam/trial/office steps","Follow the instructions shown by DOTM for your category."],["Check status/records","Use official DOTM services for current status information."]],docs:["Personal details","Identity documents","Application/reference details"],official:"https://applydlnew.dotm.gov.np/login"},
+ pan:{title:"PAN & tax",icon:"💳",desc:"Start with the Inland Revenue Department for taxpayer services.",tags:["PAN","Tax","IRD"],steps:[["Identify your need","Personal PAN, business registration, VAT and income-tax tasks can differ."],["Open IRD","Use the official Inland Revenue Department portal."],["Prepare details","Follow the current IRD instructions and checklist."],["Keep records","Save your taxpayer/reference information securely."]],docs:["Identity details","Contact information","Business documents if applicable"],official:"https://ird.gov.np/"},
+ voter:{title:"Voter services",icon:"🗳️",desc:"Use the Election Commission's official voter-service portal.",tags:["Voter","Election"],steps:[["Open voter services","Start at the official voter portal."],["Provide requested information","Follow the current registration/verification process."],["Check details","Review the information before submitting."],["Keep confirmation","Save your reference if the system provides one."]],docs:["Identity/citizenship details","Personal information","Reference details"],official:"https://applyvr.election.gov.np/"},
+ scholarship:{title:"Scholarships",icon:"🎓",desc:"Check current Ministry of Education scholarship notices.",tags:["Scholarship","Education"],steps:[["Find the current notice","Use the official ministry notice page."],["Read eligibility","Check program, grade, nationality, deadline and other requirements."],["Prepare documents","Follow exactly what the current notice requests."],["Apply as instructed","Use the named application channel."]],docs:["Academic certificates","Identity documents","Program-specific documents"],official:"https://moest.gov.np/category/1973/"},
+ fraud:{title:"Online fraud — immediate steps",icon:"🚨",desc:"Preserve evidence and use official reporting/support channels.",tags:["Cyber","Fraud","Safety"],steps:[["Stop sharing information","Do not send money or share OTP/PIN/passwords."],["Preserve evidence","Keep screenshots, URLs, messages, transaction IDs and phone numbers."],["Contact your provider","Use your bank/payment provider's official support quickly if money is involved."],["Report cybercrime","Use Nepal Police Cyber Bureau reporting channels."]],docs:["Screenshots","Transaction/reference IDs","URLs/messages","Identification as requested"],official:"https://cyberbureau.nepalpolice.gov.np/report-cyber-crime/"},
+ citizenship:{title:"Citizenship — starting point",icon:"📜",desc:"The process varies by the type of citizenship case.",tags:["Citizenship","Documents","Office"],steps:[["Identify your case","First issuance, descent, replacement and other cases may have different requirements."],["Find the responsible office","Start with the relevant District Administration Office or authority."],["Check the current document list","Confirm the exact requirements before traveling."],["Keep copies and references","Store safe copies and application/reference details."]],docs:["Existing identity documents if any","Supporting family/legal records as applicable","Current office checklist"],official:"https://nepal.gov.np/"},
+ land:{title:"Land & property — starting point",icon:"🏠",desc:"Use official land-record, map and land-administration services for actual transactions.",tags:["Land","Property","Map"],steps:[["Identify the record/service","Ownership record, map, transfer, tax and registration can be different services."],["Use the official government starting point","Begin from Nepal Government / official land-related portals."],["Confirm the responsible office","Land and local administrative processes may vary by location."],["Verify before payment/signing","Do not rely on unofficial intermediaries for legal property work."]],docs:["Citizenship/identity","Land/property references","Location/parcel information as required"],official:"https://nepal.gov.np/"},
+ abroad:{title:"Going abroad — starting point",icon:"✈️",desc:"Use official passport, immigration, foreign-employment and consular sources for each step.",tags:["Abroad","Immigration","Employment"],steps:[["Identify purpose","Study, employment, visit and family travel have different requirements."],["Secure the core identity documents","Passport and supporting academic/legal documents may be needed."],["Use official agencies","Check government sources before relying on a consultancy or agent."],["Keep copies and references","Store documents, receipts and application numbers safely."]],docs:["Passport","Purpose-specific documents","Financial/academic/legal documents as applicable"],official:"https://nepalpassport.gov.np/en"}
+};
+
+const aliases=[
+["passport","passport"],["राहदानी","passport"],["पासपोर्ट","passport"],
+["national id","nid"],["nid","nid"],["परिचयपत्र","nid"],["राष्ट्रिय परिचयपत्र","nid"],
+["driving","license"],["license","license"],["licence","license"],["लाइसेन्स","license"],["सवारी","license"],
+["pan","pan"],["tax","pan"],["vat","pan"],["कर","pan"],
+["voter","voter"],["मतदाता","voter"],["election","voter"],
+["scholarship","scholarship"],["छात्रवृत्ति","scholarship"],
+["fraud","fraud"],["scam","fraud"],["ठगी","fraud"],["cyber","fraud"],["hack","fraud"],
+["citizenship","citizenship"],["नागरिकता","citizenship"],
+["land","land"],["property","land"],["जग्गा","land"],["घरजग्गा","land"],
+["abroad","abroad"],["foreign employment","abroad"],["विदेश","abroad"],["वैदेशिक रोजगार","abroad"]
+];
+
+let currentKey=null;
+let saved=JSON.parse(localStorage.getItem("ns_saved")||"[]");
+let trackers=JSON.parse(localStorage.getItem("ns_trackers")||"[]");
+
+function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+
+function showAnswer(key){
+ const d=SERVICES[key];if(!d)return;
+ currentKey=key;
+ const box=document.getElementById("answer");
+ box.innerHTML=`
+  <div class="answer-top">
+    <div class="answer-icon">${d.icon}</div>
+    <div><h3>${d.title}</h3><div class="lead">${d.desc}</div><div class="tags">${d.tags.map(t=>`<span class="tag">✓ ${esc(t)}</span>`).join("")}</div></div>
+  </div>
+  <div class="steps">${d.steps.map((s,i)=>`<div class="step"><div class="num">${i+1}</div><div><b>${esc(s[0])}</b><span>${esc(s[1])}</span></div></div>`).join("")}</div>
+  <div class="checklist">
+    <div class="check-head"><b>Preparation checklist</b><button class="btn gray" onclick="checkAll('${key}')">Check all</button></div>
+    ${d.docs.map((x,i)=>`<label class="check-item"><input type="checkbox" data-check="${key}-${i}"><span>${esc(x)}</span></label>`).join("")}
+  </div>
+  <div class="official"><b>Official source</b><br>Use the official portal for the actual transaction. NepalSathi does not collect your government application.</div>
+  <div class="actions">
+    <a class="btn red" href="${d.official}" target="_blank" rel="noopener">Open official source ↗</a>
+    <button class="btn gray" onclick="saveService('${key}')">${saved.includes(key)?"★ Saved":"☆ Save"}</button>
+    <button class="btn gray" onclick="printAnswer()">🖨 Print</button>
+    <button class="btn gray" onclick="shareCurrent()">↗ Share</button>
+  </div>
+  <div class="warning"><b>Verify before acting:</b> fees, dates, eligibility and document requirements can change.</div>
+  <div class="savebar"><span>Checklist progress is saved only on this browser.</span><button class="btn gray" onclick="clearChecks('${key}')">Clear checklist</button></div>`;
+ box.classList.add("show");
+ restoreChecks(key);
+ box.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+function saveService(key){
+ if(saved.includes(key))saved=saved.filter(x=>x!==key);else saved.push(key);
+ localStorage.setItem("ns_saved",JSON.stringify(saved));
+ renderSaved();
+ if(currentKey)showAnswer(currentKey);
+ toast(saved.includes(key)?"Saved":"Removed from saved");
+}
+function restoreChecks(key){
+ const s=JSON.parse(localStorage.getItem("check_"+key)||"{}");
+ document.querySelectorAll(`[data-check^="${key}-"]`).forEach(el=>{
+  el.checked=!!s[el.dataset.check];
+  el.onchange=()=>{
+   const st=JSON.parse(localStorage.getItem("check_"+key)||"{}");
+   st[el.dataset.check]=el.checked;localStorage.setItem("check_"+key,JSON.stringify(st));
+  };
+ });
+}
+function checkAll(key){document.querySelectorAll(`[data-check^="${key}-"]`).forEach(el=>{if(!el.checked)el.click()})}
+function clearChecks(key){localStorage.removeItem("check_"+key);showAnswer(key);toast("Checklist cleared")}
+function renderSaved(){
+ const b=document.getElementById("savedBox");
+ b.innerHTML=saved.length?`<div class="saved-grid">${saved.map(k=>`<div class="saved-item"><b>${SERVICES[k].icon} ${esc(SERVICES[k].title)}</b><span>${esc(SERVICES[k].desc)}</span><button class="btn blue" style="margin-top:8px" onclick="showAnswer('${k}')">Open</button></div>`).join("")}</div>`:`<div class="empty">No saved services yet.</div>`;
+}
+function showSaved(){renderSaved();document.getElementById("savedBox").scrollIntoView({behavior:"smooth",block:"center"})}
+
+
+const QUERY_MAP=[
+ ["passport","passport",["passport","पासपोर्ट","राहदानी","renew passport","passport banauna","passport बनाउनु"],"Passport application, appointment and status"],
+ ["nid","nid",["nid","national id","national identification","national identity","राष्ट्रिय परिचयपत्र","परिचयपत्र","nid banauna"],"National ID enrollment and citizen services"],
+ ["license","license",["license","licence","driving license","driving","लाइसेन्स","सवारी चालक","license banauna"],"Driving-license application and transport services"],
+ ["pan","pan",["pan","tax","vat","ird","कर","प्यान","taxpayer"],"PAN and Inland Revenue services"],
+ ["voter","voter",["voter","मतदाता","election","मतदाता नामावली","vote"],"Voter registration and election services"],
+ ["scholarship","scholarship",["scholarship","छात्रवृत्ति","student scholarship","study scholarship","छात्रवृत्ति खोज"],"Scholarship notices and education resources"],
+ ["fraud","fraud",["fraud","scam","cyber","ठगी","अनलाइन ठगी","online fraud","otp scam","hack","hacked"],"Cyber-fraud safety and reporting"],
+ ["citizenship","citizenship",["citizenship","नागरिकता","citizenship lost","citizenship हरायो","नागरिकता हरायो"],"Citizenship starting point and case guidance"],
+ ["land","land",["land","property","जग्गा","जमिन","घरजग्गा","land record","lalpurja","लालपुर्जा"],"Land and property service starting point"],
+ ["abroad","abroad",["abroad","foreign employment","विदेश","वैदेशिक रोजगार","japan","korea","qatar","dubai","study abroad","work abroad"],"Going-abroad and foreign-employment starting point"]
+];
+
+const QUERY_INTENT=[
+ ["what do i need","checklist"],["what documents","checklist"],["documents needed","checklist"],
+ ["के चाहिन्छ","checklist"],["कागज","checklist"],["कागजात","checklist"],
+ ["कसरी","howto"],["kasari","howto"],["how to","howto"],["बनाउने","howto"],["बनाउन","howto"],
+ ["lost","lost"],["हरायो","lost"],["हराएको","lost"],
+ ["renew","renew"],["renewal","renew"],["नवीकरण","renew"],
+ ["status","status"],["स्थिति","status"],
+ ["appointment","appointment"],["अपोइन्टमेन्ट","appointment"]
+];
+
+const POPULAR_QUERIES=[
+ ["passport banauna k chaincha","passport"],
+ ["mero citizenship harayo","citizenship"],
+ ["national id kasari banaune","nid"],
+ ["driving license kasari banaune","license"],
+ ["PAN kasari banaune","pan"],
+ ["online fraud bhayo","fraud"],
+ ["jagga ko lalpurja","land"],
+ ["bidesh jana k chaincha","abroad"]
+];
+
+function normalizeQuery(text){
+  return (text||"").toLowerCase().normalize("NFKD")
+    .replace(/[“”‘’]/g,"").replace(/[^\p{L}\p{N}\s]/gu," ")
+    .replace(/\s+/g," ").trim();
+}
+
+function scoreService(query, entry){
+  const q=normalizeQuery(query); let score=0;
+  for(const term of entry[2]){
+    const t=normalizeQuery(term); if(!t) continue;
+    if(q===t) score+=100;
+    else if(q.includes(t)) score+=48;
+    else if(t.includes(q)&&q.length>=3) score+=27;
+    const qWords=new Set(q.split(" ")); let common=0;
+    for(const w of t.split(" ")) if(w.length>=3&&qWords.has(w)) common++;
+    score += common*7;
+  }
+  if(/\bpassport\b|पासपोर्ट|राहदानी/.test(q)&&entry[1]==="passport")score+=15;
+  if(/नागरिकता|citizenship/.test(q)&&entry[1]==="citizenship")score+=15;
+  if(/जग्गा|लालपुर्जा|land/.test(q)&&entry[1]==="land")score+=15;
+  if(/ठगी|scam|fraud|otp|hack/.test(q)&&entry[1]==="fraud")score+=18;
+  if(/विदेश|abroad|japan|korea|qatar|dubai|employment/.test(q)&&entry[1]==="abroad")score+=12;
+  return score;
+}
+
+function detectIntent(query){
+  const q=normalizeQuery(query);
+  for(const item of QUERY_INTENT) if(q.includes(item[0])) return item[1];
+  return "general";
+}
+function intentLabel(intent){
+  return ({checklist:"Documents / checklist",howto:"Step-by-step process",lost:"Lost / replacement",renew:"Renewal",status:"Status / checking",appointment:"Appointment",general:"Service"})[intent]||"Service";
+}
+function escapeJs(s){
+  return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/\r?\n/g," ");
+}
+function buildSuggestionButtons(query,target){
+  const box=document.getElementById(target),q=normalizeQuery(query);
+  if(!q){
+    box.innerHTML='<div class="search-hint">Popular: passport • NID • driving license • PAN • scholarship • fraud • citizenship • land</div>';
+    box.classList.add("show"); return;
+  }
+  const ranked=QUERY_MAP.map(entry=>({entry,score:scoreService(q,entry)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5);
+  const exactPopular=POPULAR_QUERIES.filter(x=>normalizeQuery(x[0]).includes(q)||q.includes(normalizeQuery(x[0]))).slice(0,3);
+  let items=exactPopular.map(x=>{const d=SERVICES[x[1]];return `<button class="suggestion" onclick="applySearchSuggestion('${escapeJs(x[0])}')"><div class="suggestion-icon">${d.icon}</div><div class="suggestion-main"><b>${escapeHtml(x[0])}</b><span>Popular search</span></div></button>`}).join("");
+  items += ranked.map(({entry})=>{const d=SERVICES[entry[1]];return `<button class="suggestion" onclick="openSearchResult('${entry[1]}','${escapeJs(intentLabel(detectIntent(q)))}')"><div class="suggestion-icon">${d.icon}</div><div class="suggestion-main"><b>${escapeHtml(d.title)}</b><span>${escapeHtml(d.desc)}</span></div></button>`}).join("");
+  if(!items) items='<div class="search-hint">Try “passport banauna k chaincha”, “citizenship harayo”, “NID kasari banaune”, or “online fraud bhayo”.</div>';
+  box.innerHTML=items; box.classList.add("show");
+}
+function applySearchSuggestion(text){document.getElementById("heroSearch").value=text;hideSuggestions();searchSite();}
+function openSearchResult(key,intent){hideSuggestions();showAnswer(key,intent);}
+function showSearchSuggestions(value){buildSuggestionButtons(value,"heroSuggestions");buildSuggestionButtons(value,"topSuggestions");}
+function hideSuggestions(){document.getElementById("heroSuggestions")?.classList.remove("show");document.getElementById("topSuggestions")?.classList.remove("show");}
+
+function searchSite(){
+  const q=document.getElementById("heroSearch").value.trim(),section=document.getElementById("resultsSection"),out=document.getElementById("results"),intent=detectIntent(q);
+  if(!q){section.style.display="none";hideSuggestions();return;}
+  const ranked=QUERY_MAP.map(entry=>({entry,score:scoreService(q,entry)})).sort((a,b)=>b.score-a.score).filter(x=>x.score>0).slice(0,6);
+  section.style.display="block";
+  if(!ranked.length){
+    out.innerHTML='<div class="card notice" style="grid-column:1/-1"><span class="badge">SEARCH</span><h3>We could not find a direct match yet.</h3><p>Try “passport banauna k chaincha?”, “मेरो नागरिकता हरायो”, “NID कसरी बनाउने?”, “jagga ko lalpurja”, or “online fraud bhayo”.</p></div>';
+  }else{
+    out.innerHTML=ranked.map(({entry,score})=>{
+      const d=SERVICES[entry[1]],confidence=score>=65?"Strong match":score>=35?"Likely match":"Related";
+      return `<div class="card notice"><span class="badge">${confidence}</span><h3>${d.icon} ${escapeHtml(d.title)}</h3><p>${escapeHtml(d.desc)}</p><div style="margin-top:7px;font-size:10px;color:#98a2b3">Detected intent: ${escapeHtml(intentLabel(intent))}</div><button class="btn red" style="margin-top:9px" onclick="showAnswer('${entry[1]}','${escapeJs(intent)}')">Open best answer</button></div>`;
+    }).join("");
+  }
+  hideSuggestions();section.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function startVoiceSearch(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){toast("Voice search is not supported in this browser.");return}
+ const r=new SR();r.lang="en-US";r.interimResults=false;r.maxAlternatives=1;
+ r.onstart=()=>toast("Listening...");
+ r.onresult=e=>{document.getElementById("heroSearch").value=e.results[0][0].transcript;searchSite()};
+ r.onerror=()=>toast("Voice search could not start.");r.start();
+}
+
+
+document.getElementById("heroSearch").addEventListener("input",e=>showSearchSuggestions(e.target.value));
+document.getElementById("heroSearch").addEventListener("focus",e=>showSearchSuggestions(e.target.value));
+document.getElementById("heroSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchSite();});
+document.getElementById("topSearch").addEventListener("input",e=>{showSearchSuggestions(e.target.value);if(e.target.value.trim())document.getElementById("heroSearch").value=e.target.value;});
+document.getElementById("topSearch").addEventListener("focus",e=>showSearchSuggestions(e.target.value));
+document.getElementById("topSearch").addEventListener("keydown",e=>{if(e.key==="Enter"){document.getElementById("heroSearch").value=e.target.value;searchSite();}});
+document.addEventListener("click",e=>{if(!e.target.closest(".nav-search")&&!e.target.closest(".hero-search"))hideSuggestions();});
+
+function checkScam(){
+ const t=document.getElementById("scamText").value.trim().toLowerCase(),box=document.getElementById("risk");
+ if(!t){box.classList.remove("show");return}
+ const f=[];
+ if(/otp|one[- ]time|verification code/.test(t))f.push("asks for an OTP/verification code");
+ if(/pin|password|passcode/.test(t))f.push("asks for a PIN/password");
+ if(/send money|pay|processing fee|deposit|transfer|rs\.?|रु/.test(t))f.push("requests money/payment");
+ if(/won|winner|prize|lottery|reward|gift/.test(t))f.push("promises an unexpected prize/reward");
+ if(/urgent|immediately|now|today|act fast/.test(t))f.push("creates urgency/pressure");
+ if(/click|login|verify|account suspended|link/.test(t))f.push("pushes an urgent link/login");
+ const risk=f.length>=3?"HIGH":f.length===2?"MEDIUM":"LOW";const cls=risk==="HIGH"?"high":risk==="MEDIUM"?"med":"low";
+ box.innerHTML=`<b class="${cls}">Risk: ${risk}</b><br><br>${f.length?f.map(x=>"• "+esc(x)).join("<br>"):"No obvious red flags detected by this basic checker."}<br><br><span style="font-size:10px">This is a simple rule-based tool, not proof of safety. Never share OTPs, PINs or passwords because a message looks convincing.</span>`;
+ box.classList.add("show");
+}
+
+function addTracker(){
+ const type=document.getElementById("trackType").value,service=document.getElementById("trackService").value.trim(),ref=document.getElementById("trackRef").value.trim(),date=document.getElementById("trackDate").value;
+ if(!service||!date){toast("Enter service and date.");return}
+ trackers.push({id:crypto.randomUUID(),type,service,ref,date,done:false});
+ localStorage.setItem("ns_trackers",JSON.stringify(trackers));
+ document.getElementById("trackService").value="";document.getElementById("trackRef").value="";document.getElementById("trackDate").value="";
+ renderTrackers();toast("Tracker item saved");
+}
+function renderTrackers(){
+ const b=document.getElementById("trackList");
+ trackers.sort((a,b)=>a.date.localeCompare(b.date));
+ b.innerHTML=trackers.length?trackers.map(x=>`<div class="track"><input type="checkbox" ${x.done?"checked":""} onchange="toggleTracker('${x.id}')"><b>${esc(x.service)}</b><small>${esc(x.type)} • ${esc(x.date)}${x.ref?" • "+esc(x.ref):""}</small><button class="btn gray" onclick="deleteTracker('${x.id}')">×</button></div>`).join(""):`<div class="empty">No tracked items yet.</div>`;
+}
+function toggleTracker(id){trackers=trackers.map(x=>x.id===id?{...x,done:!x.done}:x);localStorage.setItem("ns_trackers",JSON.stringify(trackers));renderTrackers()}
+function deleteTracker(id){trackers=trackers.filter(x=>x.id!==id);localStorage.setItem("ns_trackers",JSON.stringify(trackers));renderTrackers()}
+function focusTrack(){document.getElementById("trackerSection").scrollIntoView({behavior:"smooth",block:"center"});document.getElementById("trackService").focus()}
+
+function ageCalc(){const v=document.getElementById("dob").value;if(!v)return;const d=new Date(v+"T00:00:00"),n=new Date();let a=n.getFullYear()-d.getFullYear();const m=n.getMonth()-d.getMonth();if(m<0||(m===0&&n.getDate()<d.getDate()))a--;document.getElementById("ageOut").textContent=`Approx. age: ${a} years`}
+function discountCalc(){const p=+document.getElementById("price").value,d=+document.getElementById("disc").value;if(!(p>=0&&d>=0))return;document.getElementById("discOut").textContent=`Save Rs. ${(p*d/100).toFixed(2)} · Final Rs. ${(p-p*d/100).toFixed(2)}`}
+function fuelCalc(){const k=+document.getElementById("km").value,m=+document.getElementById("mil").value,p=+document.getElementById("fp").value;if(!(k>0&&m>0&&p>=0))return;document.getElementById("fuelOut").textContent=`Fuel ${(k/m).toFixed(2)} L · Cost Rs. ${(k/m*p).toFixed(2)}`}
+function studyCalc(){const h=+document.getElementById("hours").value,s=+document.getElementById("subjects").value;if(!(h>0&&s>0))return;document.getElementById("studyOut").textContent=`About ${(h/s).toFixed(2)} hours per subject`}
+function emiCalc(){const P=+document.getElementById("loan").value,R=+document.getElementById("rate").value/1200,N=+document.getElementById("months").value;if(!(P>0&&R>=0&&N>0))return;const emi=R===0?P/N:P*R*Math.pow(1+R,N)/(Math.pow(1+R,N)-1);document.getElementById("emiOut").textContent=`Approx. monthly EMI: Rs. ${emi.toFixed(2)}`}
+function percentCalc(){const p=+document.getElementById("part").value,w=+document.getElementById("whole").value;if(!(w>0))return;document.getElementById("percentOut").textContent=`${((p/w)*100).toFixed(2)}%`}
+function billCalc(){const b=+document.getElementById("bill").value,n=+document.getElementById("people").value;if(!(b>=0&&n>0))return;document.getElementById("billOut").textContent=`Each person: Rs. ${(b/n).toFixed(2)}`}
+function timeCalc(){const d=+document.getElementById("td").value,s=+document.getElementById("ts").value;if(!(d>0&&s>0))return;document.getElementById("timeOut").textContent=`Approx. ${(d/s).toFixed(2)} hours`}
+
+function printAnswer(){const box=document.getElementById("answer");if(!box.classList.contains("show")){toast("Open a guide first.");return}const w=window.open("","_blank");w.document.write(`<html><head><title>NepalSathi Guide</title><style>body{font-family:Arial;padding:30px;color:#222}.actions,.savebar{display:none}.step{padding:10px;border-bottom:1px solid #ddd}.official,.warning{padding:10px;margin-top:12px;border:1px solid #ddd}</style></head><body>${box.innerHTML}</body></html>`);w.document.close();w.print()}
+async function shareCurrent(){if(!currentKey){toast("Open a guide first.");return}const d=SERVICES[currentKey];try{if(navigator.share)await navigator.share({title:"NepalSathi — "+d.title,text:d.desc,url:location.href});else{await navigator.clipboard.writeText(location.href);toast("Link copied")}}catch{}}
+function openModal(t,x){document.getElementById("modalTitle").textContent=t;document.getElementById("modalContent").innerHTML=`<p>${esc(x)}</p>`;document.getElementById("modalBg").classList.add("show")}
+function closeModal(){document.getElementById("modalBg").classList.remove("show")}
+function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");clearTimeout(window.__t);window.__t=setTimeout(()=>e.classList.remove("show"),2200)}
+document.getElementById("modalBg").addEventListener("click",e=>{if(e.target.id==="modalBg")closeModal()});
+
+renderSaved();renderTrackers();
+</script>
+</body>
+</html>
